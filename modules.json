@@ -1,0 +1,9 @@
+{
+  "repo": "aswinbalasubramanian/switch_ai_qa_bot",
+  "modules": {
+    "login":    { "label": "module:login",    "owner_role": "owner-login",    "owner": "Tester A" },
+    "cart":     { "label": "module:cart",     "owner_role": "owner-cart",     "owner": "Tester B" },
+    "checkout": { "label": "module:checkout", "owner_role": "owner-checkout", "owner": "Tester C" },
+    "profile":  { "label": "module:profile",  "owner_role": "owner-profile",  "owner": "Tester D" }
+  }
+}
