@@ -9,7 +9,10 @@ Built on [Switch](https://docs.switchagents.ai/): agents and people working toge
 ![Chat](https://img.shields.io/badge/chat-Telegram-26A5E4)
 ![Tracker](https://img.shields.io/badge/tracker-GitHub%20Issues-181717)
 
-🎬 **Demo video:** _link coming_
+<p align="center">
+  <a href="https://youtu.be/20CX06pBM9E"><img src="docs/demo-thumbnail.png" width="640" alt="Watch the QA Bug Desk demo on YouTube (2:29)"></a>
+  <br/>🎬 <b><a href="https://youtu.be/20CX06pBM9E">Watch the 2.5-minute demo on YouTube</a></b>
+</p>
 
 ---
 
