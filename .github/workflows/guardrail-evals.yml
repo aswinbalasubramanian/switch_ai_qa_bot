@@ -1,0 +1,20 @@
+name: Guardrail evals
+on:
+  push:
+    paths: ["guardrails/**", "evals/**", ".github/workflows/guardrail-evals.yml"]
+  pull_request:
+    paths: ["guardrails/**", "evals/**", ".github/workflows/guardrail-evals.yml"]
+  workflow_dispatch:
+jobs:
+  evals:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Run guardrail evals
+        run: python evals/run_evals.py
+      - name: Add report to the run summary
+        if: always()
+        run: cat evals/report.md >> "$GITHUB_STEP_SUMMARY"

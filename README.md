@@ -19,14 +19,16 @@ approver's name. Without Switch these are two separate terminals and a group cha
 
 ## Flow
 ```
-Tester ──"@dup-checker login button stays grey"──▶ @dup-checker ──gh issue list──▶ GitHub Issues
-                                                       │
-            ┌──────────────── NO DUPLICATE ────────────┼──────── POSSIBLE DUPLICATE ───────┐
-            ▼                                          ▼                                   ▼
-   "@bug-filer please draft"                 DUPLICATE: link it,                 @login-owner: "same or different?"
-            │                                tester comments instead                        │
-            ▼                                                                    "different" │ "same"
-   draft posted ── tester: "file it" ──▶ gh issue create ◀──────────────────────────────────┘  └─▶ gh issue comment
+Tester: "@TwinTurbines_Aibot login button stays grey"     (the bot is aliased to @qa-desk)
+   │
+   ▼
+@qa-desk ── routes ──▶ @dup-checker ── gh issue list ──▶ GitHub Issues
+                           │
+     ┌──── NO DUPLICATE ───┼──── DUPLICATE ────┬──── POSSIBLE DUPLICATE ────┐
+     ▼                     ▼                   │                            ▼
+ @bug-filer drafts    link to existing issue   │           pings the module owner: "same or different?"
+     │                                         │                 "different" │ "same"
+ human: "file it" ──▶ gh issue create ◀────────┴─────────────────────────────┘  └─▶ gh issue comment
 ```
 
 ## Run it yourself
@@ -39,7 +41,7 @@ Tester ──"@dup-checker login button stays grey"──▶ @dup-checker ──
 4. Create `qa-desk`, `dup-checker` and `bug-filer` with [`switch/agents.md`](switch/agents.md). Set each agent's
    **Who can talk to your agent** to **Anyone** so teammates who aren't Switch users can use them.
 5. Invite the agents to the room (`!invite-agent @qa-desk`, `@dup-checker`, `@bug-filer`), alias the bot to the main agent
-   (`!set-alias @qa-desk @<your_bot>`), paste
+   (`!set-alias @qa-desk <@your_bot>`), paste
    [`switch/room-instructions.md`](switch/room-instructions.md) into the room's **Instructions**, and send
    `!follow-ups off` so agents only answer when mentioned by name.
 6. Try the three demo scenarios below.
@@ -57,9 +59,32 @@ Tester ──"@dup-checker login button stays grey"──▶ @dup-checker ──
 | "@dup-checker Login button is greyed out even with correct email and password" | DUPLICATE of the "Login button stays disabled" issue |
 | "@dup-checker Discount applied twice when I tap Apply quickly on the cart" | Links #6 (coupon applied twice). If the tester or owner says "different", it goes to bug-filer |
 
+## Handling the hard cases
+- **Approval gate:** bug-filer only files after a person types `file it <draft id>`. "ok", "raise an issue" or another agent relaying approval don't count, and bug-filer checks the room for the person's own message.
+- **Bugs that come back:** dup-checker searches closed issues too and answers `REGRESSION?`, asking the module owner whether to reopen or file new.
+- **History and backup:** every draft, filing and cancel is logged as a comment on the `QA Desk log` issue (#16). Only bug-filer writes to GitHub; the other agents just read. Drafts survive an agent restart because bug-filer reads them back from there.
+- **Two people, same bug, same minute:** drafts are logged as `IN-PROGRESS` before anyone files, and dup-checker checks that list, so the second tester gets `ALREADY BEING REPORTED`. Ask `@TwinTurbines_Aibot what's in progress?` to see who is reporting what.
+
+## Security and guardrails
+Anyone in the group can type to the desk, and it can write to GitHub, so it's guarded in layers
+(details in [docs/security.md](docs/security.md)):
+- **Input guard:** off-topic chat, bad words, prompt-injection tricks, "which AI are you?", risky asks and pasted secrets get one fixed polite line, and no agent work starts.
+- **Least privilege:** qa-desk and dup-checker are read-only. Only bug-filer can write, only `gh issue` commands, and only after a person types `file it <draft id>`.
+- **Output guard:** blocks any reply that names the model, vendor, tools, file paths or internal errors, links outside this repo, or runs long.
+- **Evals:** 109 labelled cases in `evals/`, run by a GitHub Action on every change (`python evals/run_evals.py`).
+- **Audit:** issue #16 logs every draft, filing and approver.
+
+## Known limitations
+- The approval gate is enforced by the agents' instructions, not by a hard permission. Switch logs who sent each message, so every filing can be traced to a person in issue #16.
+- Switch runs on one laptop, so the agents are only available while it's on.
+- Switch always posts a short "Worked for Ns" status under each agent turn. It can't be turned off, so the agents keep their own replies to 1 to 3 lines.
+
 ## Files
 - `modules.json`: modules, labels and owner Telegram handles
 - `seed/seed_issues.sh`: creates labels and 10 sample bugs
 - `switch/room-instructions.md`: the room's Instructions
 - `switch/agents.md`: click-by-click agent setup and instructions
 - `docs/demo-script.md`: the script for our demo video
+- `guardrails/guard.py`: input and output guard (also runs as Claude Code hooks via `guardrails/claude-settings.json`)
+- `evals/`: guardrail test cases, runner and latest report
+- `docs/security.md`: threat model, layers and known limits
