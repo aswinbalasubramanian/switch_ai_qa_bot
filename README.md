@@ -29,23 +29,34 @@ Tester ──"@dup-checker login button stays grey"──▶ @dup-checker ──
 
 ## Run it yourself
 1. Install Switch Console and start the local server ([quickstart](https://docs.switchagents.ai/switch-rooms/getting-started)).
-   Connect a chat app (we used Telegram; the bundled Mattermost also works).
-2. Fork or clone this repo. Log in to GitHub with `gh auth login`.
-3. Seed the demo tracker: `REPO=<you>/<repo> ./seed/seed_issues.sh` and set the same repo in `modules.json`.
-4. Create the agents with [`switch/agents.md`](switch/agents.md).
-5. Create a room, paste [`switch/room-instructions.md`](switch/room-instructions.md) as its Instructions,
-   and attach `modules.json` as a reference.
+   Connect a chat app. We used a Telegram group through our own bot (Admin > Messaging apps > Telegram);
+   the bundled Mattermost also works if you don't want Telegram.
+2. Clone this repo and run `gh auth login` on the same machine. The agents use `gh` to search and file issues.
+3. Seed the demo tracker: `REPO=<you>/<repo> ./seed/seed_issues.sh`, and set the same repo and your
+   chat usernames in `modules.json`.
+4. Create `dup-checker` and `bug-filer` with [`switch/agents.md`](switch/agents.md). Set each agent's
+   **Who can talk to your agent** to **Anyone** so teammates who aren't Switch users can use them.
+5. Invite both agents to the room (`!invite-agent @dup-checker`, `!invite-agent @bug-filer`), paste
+   [`switch/room-instructions.md`](switch/room-instructions.md) into the room's **Instructions**, and send
+   `!follow-ups off` so agents only answer when mentioned by name.
 6. Try the three demo scenarios below.
+
+### Things we learned setting it up
+- Agents aren't Telegram members, so Telegram's @ autocomplete won't list them. Type the name in full.
+- With follow-ups on, an agent treats your next message as meant for it, even a chat with a friend. Turn it off in group chats.
+- Switch roles can only be held by agents, so human module owners are pinged by their chat username from `modules.json`.
+- Edited Telegram messages may not reach the agents. Send a new message instead.
 
 ## Demo scenarios
 | Tester says | Expected result |
 |---|---|
 | "@dup-checker On the profile page, changing my email and pressing Save does nothing" | NO DUPLICATE, draft, "file it", new issue |
 | "@dup-checker Login button is greyed out even with correct email and password" | DUPLICATE of the "Login button stays disabled" issue |
-| "@dup-checker Discount applied twice when I tap Apply quickly on the cart" | POSSIBLE DUPLICATE, cart owner pinged, owner decides |
+| "@dup-checker Discount applied twice when I tap Apply quickly on the cart" | Links #6 (coupon applied twice). If the tester or owner says "different", it goes to bug-filer |
 
 ## Files
 - `modules.json`: modules, labels and owner Telegram handles
 - `seed/seed_issues.sh`: creates labels and 10 sample bugs
 - `switch/room-instructions.md`: the room's Instructions
 - `switch/agents.md`: click-by-click agent setup and instructions
+- `docs/demo-script.md`: the script for our demo video
