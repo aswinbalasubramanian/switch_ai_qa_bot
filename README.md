@@ -19,14 +19,16 @@ approver's name. Without Switch these are two separate terminals and a group cha
 
 ## Flow
 ```
-Tester ──"@dup-checker login button stays grey"──▶ @dup-checker ──gh issue list──▶ GitHub Issues
-                                                       │
-            ┌──────────────── NO DUPLICATE ────────────┼──────── POSSIBLE DUPLICATE ───────┐
-            ▼                                          ▼                                   ▼
-   "@bug-filer please draft"                 DUPLICATE: link it,                 @login-owner: "same or different?"
-            │                                tester comments instead                        │
-            ▼                                                                    "different" │ "same"
-   draft posted ── tester: "file it" ──▶ gh issue create ◀──────────────────────────────────┘  └─▶ gh issue comment
+Tester: "@TwinTurbines_Aibot login button stays grey"     (the bot is aliased to @qa-desk)
+   │
+   ▼
+@qa-desk ── routes ──▶ @dup-checker ── gh issue list ──▶ GitHub Issues
+                           │
+     ┌──── NO DUPLICATE ───┼──── DUPLICATE ────┬──── POSSIBLE DUPLICATE ────┐
+     ▼                     ▼                   │                            ▼
+ @bug-filer drafts    link to existing issue   │           pings the module owner: "same or different?"
+     │                                         │                 "different" │ "same"
+ human: "file it" ──▶ gh issue create ◀────────┴─────────────────────────────┘  └─▶ gh issue comment
 ```
 
 ## Run it yourself
@@ -39,7 +41,7 @@ Tester ──"@dup-checker login button stays grey"──▶ @dup-checker ──
 4. Create `qa-desk`, `dup-checker` and `bug-filer` with [`switch/agents.md`](switch/agents.md). Set each agent's
    **Who can talk to your agent** to **Anyone** so teammates who aren't Switch users can use them.
 5. Invite the agents to the room (`!invite-agent @qa-desk`, `@dup-checker`, `@bug-filer`), alias the bot to the main agent
-   (`!set-alias @qa-desk @<your_bot>`), paste
+   (`!set-alias @qa-desk <@your_bot>`), paste
    [`switch/room-instructions.md`](switch/room-instructions.md) into the room's **Instructions**, and send
    `!follow-ups off` so agents only answer when mentioned by name.
 6. Try the three demo scenarios below.
@@ -56,6 +58,13 @@ Tester ──"@dup-checker login button stays grey"──▶ @dup-checker ──
 | "@dup-checker On the profile page, changing my email and pressing Save does nothing" | NO DUPLICATE, draft, "file it", new issue |
 | "@dup-checker Login button is greyed out even with correct email and password" | DUPLICATE of the "Login button stays disabled" issue |
 | "@dup-checker Discount applied twice when I tap Apply quickly on the cart" | Links #6 (coupon applied twice). If the tester or owner says "different", it goes to bug-filer |
+
+## Known limitations
+- The "human approves before filing" rule lives in the agents' instructions. Switch delivers the human's message and logs who sent it, but the check itself is the agent following its prompt.
+- Only open issues are searched, so a bug that comes back after its issue was closed is reported as new.
+- Pending drafts live in the chat. If an agent's session restarts before someone says "file it", ask it to draft again.
+- If two testers report the same new bug at the same moment, both can get "no duplicate" before either is filed.
+- Switch runs on one laptop, so the agents are only available while it's on.
 
 ## Files
 - `modules.json`: modules, labels and owner Telegram handles

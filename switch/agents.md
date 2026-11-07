@@ -12,8 +12,8 @@ Testers talk to one agent. `qa-desk` decides which specialist to call, so nobody
    **Agent instructions** from "qa-desk instructions" below, same Directory, **Who can talk to your agent:** **Anyone**.
 2. Invite it: `!invite-agent @qa-desk`
 3. Make the Telegram bot itself point at it, so tagging the bot reaches `qa-desk`:
-   `!set-alias @qa-desk @TwinTurbines_Aibot`
-   (Use your own bot's username. Switch prints this exact command when the bot joins a group.)
+   `!set-alias @qa-desk <@TwinTurbines_Aibot>`
+   (Keep the angle brackets and use your own bot's username. Switch prints this command when the bot joins a group.)
    Now testers just write `@TwinTurbines_Aibot <their bug or question>`, and Telegram autocompletes the bot's name.
 
 ## Step 1: create `dup-checker`
