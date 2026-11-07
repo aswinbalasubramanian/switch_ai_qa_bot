@@ -3,14 +3,14 @@
 Paste this into the room's Instructions in Switch Console.
 
 This room is where our QA team reports bugs before filing them. Each tester owns one or more
-modules of the app. The module list, labels and owner roles are in `modules.json` (attached as a reference).
+modules of the app. The module list, labels and each owner's Telegram handle are in `modules.json` (attached as a reference).
 The issue tracker is GitHub Issues in the repo named in `modules.json`.
 
 ## Who does what
 - **Testers (humans):** describe a bug and @mention `@dup-checker`. Say which module it is in if you know.
 - **@dup-checker (agent):** checks the tracker for duplicates. It never files issues.
 - **@bug-filer (agent):** writes a clean bug report and files it. It only files after a human approves.
-- **Module owners (roles `owner-login`, `owner-cart`, `owner-checkout`, `owner-profile`):**
+- **Module owners (humans, listed in `modules.json` with their Telegram handle):**
   decide whether a "possible duplicate" is really the same bug.
 
 ## The flow
@@ -21,7 +21,7 @@ The issue tracker is GitHub Issues in the repo named in `modules.json`.
    - **NO DUPLICATE:** "No matching issue in <module>. Go ahead." Then it hands over to `@bug-filer`.
    - **DUPLICATE:** links the existing issue, quotes its title, and tells the tester not to file. It
      suggests adding a comment to the existing issue instead.
-   - **POSSIBLE DUPLICATE:** links the 1 to 3 closest issues and mentions the module's owner role,
+   - **POSSIBLE DUPLICATE:** links the 1 to 3 closest issues and mentions the module owner by their Telegram handle,
      asking: "Same bug or different?"
 4. When `@bug-filer` is mentioned, it drafts the issue (title, steps, expected, actual, module label) and
    posts the draft in the room. It asks: "Reply `file it` to create this issue."
