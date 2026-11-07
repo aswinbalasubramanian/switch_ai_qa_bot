@@ -73,7 +73,14 @@ flowchart LR
 | 👤 Owners | `modules.json` | Team directory, CODEOWNERS, Jira components |
 | 📒 Audit | A pinned log issue | Jira audit, a database, SIEM |
 
-### What a tester sees (example)
+### What a tester sees
+
+<p align="center">
+  <img src="docs/media/demo-duplicate.gif" width="420" alt="A tester reports a login bug in Telegram, qa-desk hands it to dup-checker through Switch, and dup-checker replies DUPLICATE of #2 with the issue link">
+  <br/><sub>A real run in our Telegram group: the tester reports a bug, qa-desk hands it to dup-checker through Switch, and dup-checker answers <b>DUPLICATE · #2</b> with the link.</sub>
+</p>
+
+Another example, where the owner decides:
 
 ```text
 Natesan:  @TwinTurbines_Aibot discount applied twice when I tap Apply fast
