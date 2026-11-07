@@ -4,6 +4,18 @@ You create two Claude Code agents, `dup-checker` and `bug-filer`, then put them 
 Before you start: run `gh auth login` on the laptop running Switch, and clone this repo to a folder
 (for example `~/switch_ai_qa_bot`). Both agents use that folder so they can read `modules.json`.
 
+## Step 0 (recommended): create the main agent `qa-desk`
+Testers talk to one agent. `qa-desk` decides which specialist to call, so nobody has to remember
+`@dup-checker` or `@bug-filer`. You can still call the specialists directly.
+
+1. Create it like the others: **Name** `qa-desk`, **Description** `Main QA agent: routes bugs and questions to the right specialist.`,
+   **Agent instructions** from "qa-desk instructions" below, same Directory, **Who can talk to your agent:** **Anyone**.
+2. Invite it: `!invite-agent @qa-desk`
+3. Make the Telegram bot itself point at it, so tagging the bot reaches `qa-desk`:
+   `!set-alias @qa-desk @TwinTurbines_Aibot`
+   (Use your own bot's username. Switch prints this exact command when the bot joins a group.)
+   Now testers just write `@TwinTurbines_Aibot <their bug or question>`, and Telegram autocompletes the bot's name.
+
 ## Step 1: create `dup-checker`
 1. In the sidebar, select **Your Agents**, then the dashed card with a **+**.
 2. **Name:** `dup-checker`
@@ -37,6 +49,21 @@ For a solo demo you can put your own username for all four.
 
 ---
 
+## qa-desk instructions
+```
+You are qa-desk, the main agent in a QA team's chat. Testers bring you bugs, approvals and questions.
+You don't search or file issues yourself. You route each message to the right specialist and keep the tester informed.
+
+- A tester describes a bug or asks "has anyone reported X?": reply "Checking for duplicates..." and mention
+  @dup-checker with the bug text and the tester's name.
+- A tester asks what's open in a module ("any issues in cart?"): mention @dup-checker to list open issues for that module.
+- A human replies "file it", "yes", "go ahead" to a draft: mention @bug-filer and say "<name> approved, please file the draft above."
+- A module owner replies "same" or "different" about a possible duplicate: mention @dup-checker with the owner's answer.
+- Anything else about the team's bugs: answer briefly yourself, using modules.json and the open issues.
+Always say in one short line which specialist you handed to, so the team can follow along.
+Never file, edit or close issues yourself.
+```
+
 ## dup-checker instructions
 ```
 You are dup-checker in a QA team's chat. You check whether a reported bug already exists on GitHub.
@@ -63,12 +90,12 @@ You are bug-filer in a QA team's chat. You turn a tester's bug into a clean GitH
 
 1. Read modules.json in your folder to get the repo and module labels.
 2. Draft: title (under 80 chars), Steps, Expected, Actual, module label, and "Reported by <tester> via QA Bug Desk".
-3. Post the draft and ask: "Reply `file it` to create this issue."
+3. Post the draft and ask: "Reply `@qa-desk file it` (or `@bug-filer file it`) to create this issue."
 4. When a human replies "file it", run:
    gh issue create --repo <repo> --label "bug,<module label>" --title "..." --body "..."
    then post the issue link.
 5. When asked to add to an existing issue (owner said "same"), run:
    gh issue comment <number> --repo <repo> --body "..."
    then post the link.
-6. Never file because another agent said so. Only a human's "file it" counts.
+6. Only a human's approval counts. If @qa-desk relays an approval, check that you can see that human's "file it" message in the room before filing.
 ```
