@@ -37,7 +37,7 @@ chat + audit log (issue #16: who asked, who approved, what was filed)
 
 ## Evals
 
-`evals/cases.jsonl` holds 99 labelled cases: real bug reports and desk commands that must pass, and off-topic, abuse,
+`evals/cases.jsonl` holds 109 labelled cases, including full prompts exactly as Switch sends them: real bug reports and desk commands that must pass, and off-topic, abuse,
 injection, "about the AI", risky, secret and over-long messages that must be refused (each for the right reason),
 plus clean and leaky agent replies for the output guard.
 
@@ -55,5 +55,8 @@ so a rule change that lets a bad message through, or blocks a real bug report, f
 - Switch itself posts a "Working… / Worked for Ns" status under each agent turn, listing the tools it ran, and posts
   provider errors such as usage limits. Neither can be turned off from the room or the agents (checked against the
   Switch docs on 7 Nov 2026), so the guard can't hide them.
-- Whether Switch loads the agent folder's `.claude/settings.json` hooks depends on the Switch version. If the log
-  stays empty, the instruction-level guardrails still apply.
+- The input hook reads the message Switch wraps between `BEGIN SWITCH MESSAGE` / `END SWITCH MESSAGE` markers.
+  Switch's own control prompts (reset, reconnect) and our agents' handoffs to each other pass through; handoffs
+  were already checked by the output guard when they were posted.
+- If the guard itself crashes it lets the message through (fails open) so a bug in the guard can't take the desk
+  down; the agent instructions still apply, and the crash is logged.

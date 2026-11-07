@@ -71,7 +71,7 @@ Anyone in the group can type to the desk, and it can write to GitHub, so it's gu
 - **Input guard:** off-topic chat, bad words, prompt-injection tricks, "which AI are you?", risky asks and pasted secrets get one fixed polite line, and no agent work starts.
 - **Least privilege:** qa-desk and dup-checker are read-only. Only bug-filer can write, only `gh issue` commands, and only after a person types `file it <draft id>`.
 - **Output guard:** blocks any reply that names the model, vendor, tools, file paths or internal errors, links outside this repo, or runs long.
-- **Evals:** 99 labelled cases in `evals/`, run by a GitHub Action on every change (`python evals/run_evals.py`).
+- **Evals:** 109 labelled cases in `evals/`, run by a GitHub Action on every change (`python evals/run_evals.py`).
 - **Audit:** issue #16 logs every draft, filing and approver.
 
 ## Known limitations

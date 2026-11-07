@@ -76,6 +76,7 @@ SECRET_PATTERNS = [
     r"-----begin [a-z ]*private key-----",
     r"\b(password|passwd|pwd|api[_ ]?key|secret|token)\s*[:=]\s*\S{4,}",
     r"\b\d{4}[ -]?\d{4}[ -]?\d{4}[ -]?\d{4}\b",  # card-like number
+    r"\bsw_[a-z0-9]{16,}",  # Switch credentials
 ]
 
 BAD_WORDS = [
@@ -85,6 +86,7 @@ BAD_WORDS = [
     # common Hinglish / Tanglish abuse seen in Indian team chats
     "chutiya", "madarchod", "behenchod", "bhenchod", "gandu", "harami", "kamina", "otha", "punda", "thevidiya",
 ]
+MASKED_SWEAR_RE = re.compile(r"\b(f[\*#@%]{2,}k?|f[u\*]c?[\*#]+|sh[\*#!]t|b[\*#]tch|a[\*#]{2}hole)")
 BAD_WORD_RE = re.compile(r"\b(" + "|".join(re.escape(w) for w in BAD_WORDS) + r")\b")
 
 INJECTION_PATTERNS = [
@@ -160,7 +162,7 @@ def check_input(text):
     if hit:
         return {"allow": False, "category": "secret", "reply": REPLIES["secret"], "match": "[redacted]"}
 
-    m = BAD_WORD_RE.search(t) or BAD_WORD_RE.search(deleet(t))
+    m = BAD_WORD_RE.search(t) or BAD_WORD_RE.search(deleet(t)) or MASKED_SWEAR_RE.search(t)
     if m:
         return {"allow": False, "category": "abuse", "reply": REPLIES["abuse"], "match": m.group(0)}
 
@@ -247,30 +249,47 @@ def _log(event, payload):
         pass
 
 
-def latest_human_text(prompt):
-    """Switch wraps the chat message in its own text. Check the last chat line, not Switch's wrapper.
-
-    Falls back to the whole prompt. Lines from our own agents (handoffs such as
-    "@dup-checker check for X: ...") are QA by construction and pass the same rules.
-    """
-    lines = [l.strip() for l in (prompt or "").splitlines() if l.strip()]
-    for line in reversed(lines):
-        if "@" in line or len(lines) == 1:
-            return line
-    return prompt or ""
-
-
 def _read_stdin_json():
     return json.loads(sys.stdin.buffer.read().decode("utf-8", "replace") or "{}")
+
+
+# Switch wraps each chat message it hands an agent like this:
+#   [Switch] curdRicee addressed you in room <id> (...):
+#   BEGIN SWITCH MESSAGE <hex>
+#   <the sender's message>
+#   END SWITCH MESSAGE <hex>
+# Prompts without the markers are Switch's own control prompts (reset, reconnect) and pass.
+SWITCH_MSG_RE = re.compile(r"BEGIN SWITCH MESSAGE (\w+)\s*\n(.*?)\n\s*END SWITCH MESSAGE \1", re.S)
+SWITCH_SENDER_RE = re.compile(r"\[Switch\]\s+(.+?)\s+addressed you")
+OUR_AGENTS = {"qa-desk", "dup-checker", "bug-filer", "switch-buddy-admin"}
+
+
+def parse_switch_prompt(prompt):
+    """Return (sender, message) or (None, None) for a control prompt."""
+    m = SWITCH_MSG_RE.search(prompt or "")
+    if not m:
+        return None, None
+    s = SWITCH_SENDER_RE.search(prompt)
+    return (s.group(1).strip() if s else ""), m.group(2).strip()
 
 
 def hook_input(mode):
     data = _read_stdin_json()
     prompt = data.get("prompt", "")
-    text = latest_human_text(prompt)
+    sender, message = parse_switch_prompt(prompt)
+    if message is None:
+        _log("input", {"mode": mode, "allow": True, "category": "switch_control", "chars": len(prompt)})
+        print("{}")
+        return
+    if sender in OUR_AGENTS:
+        # Handoffs between our own agents were already checked by the output guard when posted.
+        _log("input", {"mode": mode, "allow": True, "category": "agent_handoff", "sender": sender,
+                       "preview": message[:160]})
+        print("{}")
+        return
+    text = message
     verdict = check_input(text)
-    _log("input", {"mode": mode, "agent_cwd": os.path.basename(data.get("cwd", "")),
-                   "allow": verdict["allow"], "category": verdict["category"],
+    _log("input", {"mode": mode, "sender": sender, "allow": verdict["allow"], "category": verdict["category"],
                    "chars": len(prompt), "preview": "" if verdict["category"] == "secret" else text[:160]})
     if mode == "enforce" and not verdict["allow"] and verdict["reply"]:
         ctx = ("QA DESK GUARD: this message was refused (" + verdict["category"] + "). "
@@ -298,9 +317,13 @@ def hook_output(mode):
     if not re.search(r"(post|send|reply|message)", tool, re.I):
         print("{}")
         return
-    texts = list(_strings(data.get("tool_input", {})))
-    # Only the human-readable fields matter; ids/room names are short and harmless.
-    text = "\n".join(s for s in texts if len(s) > 2)
+    tool_input = data.get("tool_input", {}) or {}
+    # Check what people will read: the message body, not ids such as room or thread keys.
+    body_keys = ("message", "text", "content", "body")
+    texts = [tool_input[k] for k in body_keys if isinstance(tool_input.get(k), str)]
+    if not texts:
+        texts = [max(_strings(tool_input), key=len, default="")]
+    text = "\n".join(texts)
     verdict = check_output(text)
     _log("output", {"mode": mode, "tool": tool, "allow": verdict["allow"], "problems": verdict["problems"],
                     "preview": verdict["clean"][:160]})

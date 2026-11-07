@@ -24,7 +24,18 @@ def run(verbose=False):
     stats = collections.OrderedDict()
     failures = []
     for i, c in enumerate(cases, 1):
-        if c["direction"] == "input":
+        if c["direction"] == "switch_prompt":
+            # Full prompt as Switch sends it: control prompts and our own agents' handoffs pass,
+            # people's messages are checked.
+            sender, message = guard.parse_switch_prompt(c["text"])
+            if message is None or sender in guard.OUR_AGENTS:
+                v = {"allow": True, "category": "pass_through"}
+            else:
+                v = guard.check_input(message)
+            got = "allow" if v["allow"] else "refuse"
+            got_cat = v["category"]
+            ok = got == c["expect"] and (c["expect"] == "allow" or got_cat == c["category"])
+        elif c["direction"] == "input":
             v = guard.check_input(c["text"])
             got = "allow" if v["allow"] else "refuse"
             got_cat = v["category"]

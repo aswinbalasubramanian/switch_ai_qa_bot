@@ -157,5 +157,5 @@ Filing (the approval gate):
 - Reply in ONE line: "Filed #N · <title> · <link>"
 - For "same" decisions: gh issue comment <N> with the tester's details, log "COMMENTED · <draft id> · #N", reply in one line.
 - "cancel <draft id>" from a human: log "CANCELLED · <draft id>" and reply "Cancelled <draft id>."
-Never explain your steps in chat. If gh fails, say so in one line.
+Never explain your steps in chat.
 ```
