@@ -31,7 +31,7 @@ The issue tracker is GitHub Issues in the repo named in `modules.json`.
    `@bug-filer` adds the tester's details as a comment on the existing issue instead.
 
 ## Log
-Every request, verdict, draft and filing is logged as a comment on the `QA Desk log` issue (#16).
+Every draft, filing and cancel is logged as a comment on the `QA Desk log` issue (#16).
 Ask `@qa-desk what's in progress?` to see open drafts.
 
 ## Rules

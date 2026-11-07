@@ -62,7 +62,7 @@ Tester: "@TwinTurbines_Aibot login button stays grey"     (the bot is aliased to
 ## Handling the hard cases
 - **Approval gate:** bug-filer only files after a person types `file it <draft id>`. "ok", "raise an issue" or another agent relaying approval don't count, and bug-filer checks the room for the person's own message.
 - **Bugs that come back:** dup-checker searches closed issues too and answers `REGRESSION?`, asking the module owner whether to reopen or file new.
-- **History and backup:** every request, verdict, draft and filing is logged as a comment on the `QA Desk log` issue (#16). Drafts survive an agent restart because bug-filer reads them back from there.
+- **History and backup:** every draft, filing and cancel is logged as a comment on the `QA Desk log` issue (#16). Only bug-filer writes to GitHub; the other agents just read. Drafts survive an agent restart because bug-filer reads them back from there.
 - **Two people, same bug, same minute:** drafts are logged as `IN-PROGRESS` before anyone files, and dup-checker checks that list, so the second tester gets `ALREADY BEING REPORTED`. Ask `@TwinTurbines_Aibot what's in progress?` to see who is reporting what.
 
 ## Known limitations
