@@ -1,0 +1,19 @@
+{
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          { "type": "command", "command": "python \"$CLAUDE_PROJECT_DIR/guardrails/guard.py\" hook-input --mode enforce", "timeout": 10 }
+        ]
+      }
+    ],
+    "PreToolUse": [
+      {
+        "matcher": "mcp__switch__.*",
+        "hooks": [
+          { "type": "command", "command": "python \"$CLAUDE_PROJECT_DIR/guardrails/guard.py\" hook-output --mode enforce", "timeout": 10 }
+        ]
+      }
+    ]
+  }
+}

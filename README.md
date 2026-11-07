@@ -65,6 +65,15 @@ Tester: "@TwinTurbines_Aibot login button stays grey"     (the bot is aliased to
 - **History and backup:** every draft, filing and cancel is logged as a comment on the `QA Desk log` issue (#16). Only bug-filer writes to GitHub; the other agents just read. Drafts survive an agent restart because bug-filer reads them back from there.
 - **Two people, same bug, same minute:** drafts are logged as `IN-PROGRESS` before anyone files, and dup-checker checks that list, so the second tester gets `ALREADY BEING REPORTED`. Ask `@TwinTurbines_Aibot what's in progress?` to see who is reporting what.
 
+## Security and guardrails
+Anyone in the group can type to the desk, and it can write to GitHub, so it's guarded in layers
+(details in [docs/security.md](docs/security.md)):
+- **Input guard:** off-topic chat, bad words, prompt-injection tricks, "which AI are you?", risky asks and pasted secrets get one fixed polite line, and no agent work starts.
+- **Least privilege:** qa-desk and dup-checker are read-only. Only bug-filer can write, only `gh issue` commands, and only after a person types `file it <draft id>`.
+- **Output guard:** blocks any reply that names the model, vendor, tools, file paths or internal errors, links outside this repo, or runs long.
+- **Evals:** 99 labelled cases in `evals/`, run by a GitHub Action on every change (`python evals/run_evals.py`).
+- **Audit:** issue #16 logs every draft, filing and approver.
+
 ## Known limitations
 - The approval gate is enforced by the agents' instructions, not by a hard permission. Switch logs who sent each message, so every filing can be traced to a person in issue #16.
 - Switch runs on one laptop, so the agents are only available while it's on.
@@ -76,3 +85,6 @@ Tester: "@TwinTurbines_Aibot login button stays grey"     (the bot is aliased to
 - `switch/room-instructions.md`: the room's Instructions
 - `switch/agents.md`: click-by-click agent setup and instructions
 - `docs/demo-script.md`: the script for our demo video
+- `guardrails/guard.py`: input and output guard (also runs as Claude Code hooks via `guardrails/claude-settings.json`)
+- `evals/`: guardrail test cases, runner and latest report
+- `docs/security.md`: threat model, layers and known limits
