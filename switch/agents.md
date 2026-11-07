@@ -1,6 +1,6 @@
 # Setting up the agents in Switch Console
 
-You create two Claude Code agents, `dup-checker` and `bug-filer`, then put them in one room.
+You create three agents, `qa-desk`, `dup-checker` and `bug-filer`, then put them in one room. We used Switch's Claude Code agent provider; any provider Switch supports that can run `gh` works.
 Before you start: run `gh auth login` on the laptop running Switch, and clone this repo to a folder
 (for example `~/switch_ai_qa_bot`). Both agents use that folder so they can read `modules.json`.
 

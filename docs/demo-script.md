@@ -7,7 +7,7 @@ Before recording: run `!reset-all-agents`, make sure the laptop won't sleep, and
 "Our QA team splits the app by module: login, cart, checkout, profile. Modules overlap, so two testers often find the same bug and both file it. Asking 'has anyone filed this?' in the group means waiting for someone to answer."
 
 **0:20 to 0:35, the setup (Switch Console, Your Agents)**
-"We connected our Telegram group to Switch. Three Claude Code agents sit in the room: qa-desk is the front desk, dup-checker searches GitHub Issues, bug-filer writes and files bugs. Testers only talk to the bot. Nothing gets filed until a person types 'file it'."
+"We connected our Telegram group to Switch. Three agents sit in the room: qa-desk is the front desk, dup-checker searches GitHub Issues, bug-filer writes and files bugs. Testers only talk to the bot. Nothing gets filed until a person types 'file it'."
 
 **0:35 to 0:55, scene 1: a clear duplicate**
 Type: `@TwinTurbines_Aibot Login button is greyed out even with correct email and password`
@@ -33,4 +33,4 @@ Open issue #16 on GitHub: every draft, filing and cancel is logged there with wh
 Show Switch Console with the three agents and the Telegram room.
 "Three agents and a team of people hand work to each other in one group chat. Without Switch these are separate terminals nobody connects. Switch routes the mentions, runs the agents on my laptop, and keeps people in charge of what gets filed."
 
-**End card:** repo link and "Built with Switch + Claude Code".
+**End card:** repo link and "Built with Switch".
