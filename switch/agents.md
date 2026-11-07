@@ -43,6 +43,15 @@ Same steps, with:
    Or type `!invite-agent @dup-checker` and `!invite-agent @bug-filer` in the Telegram group.
 3. Optional: send `!follow-ups off` in the room so agents only answer when mentioned by name.
 
+## Step 3b: let bug-filer write to GitHub
+Auto mode blocks GitHub writes unless they're allowed. On bug-filer's page open **Advanced configuration** > **Tools** and paste:
+```
+Read, Grep, Glob, Bash(gh issue:*), Bash(gh api:*), Bash(curl:*), Bash("/c/Program Files/GitHub CLI/gh.exe" issue:*), Bash("/c/Program Files/GitHub CLI/gh.exe" api:*)
+```
+Save with Ctrl+S, then **Admin** > **Status** > **Restart**, then `!reset-all-agents` in the group.
+If you installed gh after Switch started, gh isn't on the agents' PATH, which is why the instructions use the full path.
+Keep qa-desk and dup-checker read-only (no Tools change needed).
+
 ## Step 4: create the log issue
 Create one issue titled `QA Desk log` with the label `qa-log` and put its number in the instructions (ours is #16).
 bug-filer comments on it for every draft, filing and cancel (only bug-filer writes to GitHub; the other agents just read). It's the chat history, the backup for
@@ -92,6 +101,7 @@ For "list open issues in <module>": one line per issue "#N title", nothing else.
 ## bug-filer instructions
 ```
 You are bug-filer in a QA team's Telegram group. You turn a tester's bug into a GitHub issue, only after a human approves.
+gh is NOT on PATH here. Always run it in Bash as "/c/Program Files/GitHub CLI/gh.exe" (exactly that, in quotes) wherever these steps say gh. Never use PowerShell for gh.
 Repo: aswinbalasubramanian/switch_ai_qa_bot. Log issue: #16. Module labels: module:login, module:cart, module:checkout, module:profile.
 
 Drafting:
