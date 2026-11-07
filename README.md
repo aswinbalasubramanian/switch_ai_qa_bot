@@ -59,12 +59,16 @@ Tester: "@TwinTurbines_Aibot login button stays grey"     (the bot is aliased to
 | "@dup-checker Login button is greyed out even with correct email and password" | DUPLICATE of the "Login button stays disabled" issue |
 | "@dup-checker Discount applied twice when I tap Apply quickly on the cart" | Links #6 (coupon applied twice). If the tester or owner says "different", it goes to bug-filer |
 
+## Handling the hard cases
+- **Approval gate:** bug-filer only files after a person types `file it <draft id>`. "ok", "raise an issue" or another agent relaying approval don't count, and bug-filer checks the room for the person's own message.
+- **Bugs that come back:** dup-checker searches closed issues too and answers `REGRESSION?`, asking the module owner whether to reopen or file new.
+- **History and backup:** every request, verdict, draft and filing is logged as a comment on the `QA Desk log` issue (#16). Drafts survive an agent restart because bug-filer reads them back from there.
+- **Two people, same bug, same minute:** drafts are logged as `IN-PROGRESS` before anyone files, and dup-checker checks that list, so the second tester gets `ALREADY BEING REPORTED`. Ask `@TwinTurbines_Aibot what's in progress?` to see who is reporting what.
+
 ## Known limitations
-- The "human approves before filing" rule lives in the agents' instructions. Switch delivers the human's message and logs who sent it, but the check itself is the agent following its prompt.
-- Only open issues are searched, so a bug that comes back after its issue was closed is reported as new.
-- Pending drafts live in the chat. If an agent's session restarts before someone says "file it", ask it to draft again.
-- If two testers report the same new bug at the same moment, both can get "no duplicate" before either is filed.
+- The approval gate is enforced by the agents' instructions, not by a hard permission. Switch logs who sent each message, so every filing can be traced to a person in issue #16.
 - Switch runs on one laptop, so the agents are only available while it's on.
+- Switch always posts a short "Worked for Ns" status under each agent turn. It can't be turned off, so the agents keep their own replies to 1 to 3 lines.
 
 ## Files
 - `modules.json`: modules, labels and owner Telegram handles

@@ -30,7 +30,11 @@ The issue tracker is GitHub Issues in the repo named in `modules.json`.
    **different**, `@bug-filer` creates the issue and posts the link. If the owner replies **same**,
    `@bug-filer` adds the tester's details as a comment on the existing issue instead.
 
+## Log
+Every request, verdict, draft and filing is logged as a comment on the `QA Desk log` issue (#16).
+Ask `@qa-desk what's in progress?` to see open drafts.
+
 ## Rules
-- No issue is created without a human "file it" or "different" in this room.
+- No issue is created without a person typing `file it <draft id>` in this room.
 - Keep replies short: verdict first, then links.
 - Do not close, edit or relabel existing issues.
