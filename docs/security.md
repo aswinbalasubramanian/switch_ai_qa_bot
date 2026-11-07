@@ -47,7 +47,7 @@ python evals/run_evals.py            # writes evals/report.md, exits 1 on any fa
 
 A GitHub Action (`.github/workflows/guardrail-evals.yml`) runs them on every change to the guard or the cases,
 so a rule change that lets a bad message through, or blocks a real bug report, fails the check.
-`docs/live-evals.md` lists the same probes to send in Telegram, with what we saw.
+[`docs/live-evals.md`](live-evals.md) has the live Telegram run: 6 probes, all refused or answered as expected.
 
 ## Limits we know about
 - The keyword guard is fast and predictable but can't understand everything. A new kind of off-topic or abusive
