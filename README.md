@@ -143,12 +143,12 @@ flowchart LR
 
 This is a relay between three agents and several people in one room. The front desk hands work to the checker, the checker hands it to the filer or to a human owner, and the filer waits for a human's go-ahead. **Switch routes every handoff and mention, runs the agents, and records who said what.** Without Switch these are separate terminals and a group chat that nothing connects.
 
-Here is the setup in **Switch Console**:
+Here is the setup in **Switch Console**, the desktop app that runs the Switch server and the agents:
 
 <table>
   <tr>
     <td colspan="2" align="center">
-      <img src="docs/media/console-agents.png" width="620" alt="Switch Console showing the bug-filer, dup-checker and qa-desk agents, all running"><br/>
+      <img src="docs/media/console-agents.png" width="820" alt="Switch Console showing the bug-filer, dup-checker and qa-desk agents, all running"><br/>
       <sub><b>Your Agents:</b> the three agents, each running on the same machine as the Switch server.</sub>
     </td>
   </tr>
