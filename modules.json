@@ -1,9 +1,9 @@
 {
   "repo": "aswinbalasubramanian/switch_ai_qa_bot",
   "modules": {
-    "login":    { "label": "module:login",    "owner": "Tester A", "owner_handle": "@telegram_username_a" },
-    "cart":     { "label": "module:cart",     "owner": "Tester B", "owner_handle": "@telegram_username_b" },
-    "checkout": { "label": "module:checkout", "owner": "Tester C", "owner_handle": "@telegram_username_c" },
-    "profile":  { "label": "module:profile",  "owner": "Tester D", "owner_handle": "@telegram_username_d" }
+    "login":    { "label": "module:login",    "owner": "ABS", "owner_handle": "@curdRicee" },
+    "cart":     { "label": "module:cart",     "owner": "ABS", "owner_handle": "@curdRicee" },
+    "checkout": { "label": "module:checkout", "owner": "ABS", "owner_handle": "@curdRicee" },
+    "profile":  { "label": "module:profile",  "owner": "ABS", "owner_handle": "@curdRicee" }
   }
 }
