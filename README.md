@@ -143,6 +143,27 @@ flowchart LR
 
 This is a relay between three agents and several people in one room. The front desk hands work to the checker, the checker hands it to the filer or to a human owner, and the filer waits for a human's go-ahead. **Switch routes every handoff and mention, runs the agents, and records who said what.** Without Switch these are separate terminals and a group chat that nothing connects.
 
+Here is the setup in **Switch Console**:
+
+<table>
+  <tr>
+    <td colspan="2" align="center">
+      <img src="docs/media/console-agents.png" width="620" alt="Switch Console showing the bug-filer, dup-checker and qa-desk agents, all running"><br/>
+      <sub><b>Your Agents:</b> the three agents, each running on the same machine as the Switch server.</sub>
+    </td>
+  </tr>
+  <tr>
+    <td width="50%" valign="top">
+      <img src="docs/media/console-room.png" alt="The Telegram group as a Switch room, with room instructions and 4 agents plus 2 people as participants"><br/>
+      <sub><b>The room:</b> the Telegram group bridged into Switch. Testers and agents share one room and one set of room instructions.</sub>
+    </td>
+    <td width="50%" valign="top">
+      <img src="docs/media/console-agent-settings.png" alt="dup-checker's agent settings: instructions with guardrails, auto mode on, bypass permissions off, anyone in the room can talk to it"><br/>
+      <sub><b>Each agent's rules:</b> instructions with guardrails, risky actions need approval, and anyone in the room can ask it.</sub>
+    </td>
+  </tr>
+</table>
+
 ---
 
 ## 🚀 Run it yourself
